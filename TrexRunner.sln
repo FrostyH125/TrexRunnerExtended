@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrexRunner", "TrexRunner.csproj", "{DEC10ED8-838C-437E-A241-0B0BF0D55CB6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DEC10ED8-838C-437E-A241-0B0BF0D55CB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEC10ED8-838C-437E-A241-0B0BF0D55CB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEC10ED8-838C-437E-A241-0B0BF0D55CB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEC10ED8-838C-437E-A241-0B0BF0D55CB6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C9B3827E-F934-4FD6-8F25-777E84EC960A}
+	EndGlobalSection
+EndGlobal

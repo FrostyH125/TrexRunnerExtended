@@ -1,0 +1,18 @@
+Changelog/Development progress
+
+12-25-2024 Version 0.0.01
+-Trex sprite
+-jump sound effect
+-Sprite drawing class
+
+12-30-2024 Version 0.0.02
+-Trex actions (jump, duck, run)
+-Ground sprite and movement
+-Game start animation
+-Blink animation
+-Animation classes
+-Entity manager class
+
+Version 0.0.03
+Version 0.0.04
+Version 0.0.05
