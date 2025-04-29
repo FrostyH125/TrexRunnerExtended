@@ -44,7 +44,7 @@ namespace TrexRunner.Graphics
       //if it doesnt work just play around with the idea
       public void Draw(SpriteBatch spriteBatch, Microsoft.Xna.Framework.Vector2 position, float rotation)
       {
-        spriteBatch.Draw(Texture, position, new Rectangle(X, Y, Width, Height), TintColor, rotation, new Microsoft.Xna.Framework.Vector2(0, 0), 1f, SpriteEffects.None, 1f);
+        spriteBatch.Draw(Texture, position, new Rectangle(X, Y, Width, Height), TintColor, rotation, new Microsoft.Xna.Framework.Vector2(Width / 2, Height / 2), 1f, SpriteEffects.None, 1f);
       }
     }
 }

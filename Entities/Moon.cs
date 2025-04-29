@@ -7,7 +7,7 @@ namespace TrexRunner.Entities
 
     public class Moon : SkyObject
     {
-        private const int RIGHTMOST_SPRITE_COORDS_X = 624;
+        private const int RIGHTMOST_SPRITE_COORDS_X = 624; 
         private const int RIGHTMOST_SPRITE_COORDS_Y = 2;
         private const int SPRITE_WIDTH = 20;
         private const int SPRITE_HEIGHT = 40;

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>c:/Users/zande/projects/C#/monogame/TrexRunner/Content/../../../../../Downloads/TREX ASSETS/ExtendedTrexSpritesheet.png</SourceFile>
-  <SourceTime>2025-03-05T19:17:24.5734781-10:00</SourceTime>
+  <SourceTime>2025-04-28T08:01:30.7365387-10:00</SourceTime>
   <DestFile>c:/Users/zande/projects/C#/monogame/TrexRunner/Content/bin/Windows/ExtendedTrexSpritesheet.xnb</DestFile>
-  <DestTime>2025-03-05T19:17:33.0687859-10:00</DestTime>
+  <DestTime>2025-04-28T08:01:41.8443488-10:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2024-08-16T07:05:56-10:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

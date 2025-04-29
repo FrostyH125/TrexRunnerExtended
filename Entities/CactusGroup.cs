@@ -14,7 +14,6 @@ namespace TrexRunner.Entities
             Large = 2
         }
 
-        //small cactus sprite information
         private const int SMALL_CACTUS_SPRITE_HEIGHT = 36;
         private const int SMALL_CACTUS_SPRITE_WIDTH = 17;
         private const int SMALL_CACTUS_TEXTURE_POS_X = 228;
@@ -117,6 +116,7 @@ namespace TrexRunner.Entities
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             Sprite.Draw(spriteBatch, Position);
+
         }
     }
 }

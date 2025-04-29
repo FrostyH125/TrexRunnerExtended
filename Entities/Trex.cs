@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Net;
 using System.Reflection.Metadata;
 using System.Windows.Forms.VisualStyles;
 using Microsoft.Xna.Framework;
@@ -41,6 +42,15 @@ namespace TrexRunner.Entities
         private const int TREX_RUNNING_SPRITE_ONE_POS_X = TREX_DEFAULT_SPRITE_POS_X + TREX_DEFAULT_SPRITE_WIDTH * 2;
         private const int TREX_RUNNING_SPRITE_ONE_POS_Y = 0;
         private const float RUN_ANIMATION_FRAME_LENGTH = 0.1f;
+
+        //hurt animation
+        private const float TREX_HURT_SPRITE_FLASH_LENGTH = 0.15f;
+        public float _hurtAnimationElapsedTime { get; private set; }
+        public float _hurtAnimationLength = 0.9f;
+        private const int HURT_BLANK_SPRITE_POS_X = -1;
+        private const int HURT_BLANK_SPRITE_POS_Y = -1;
+        private const int HURT_BLANK_SPRITE_WIDTH = 1;
+        private const int HURT_BLANK_SPRITE_HEIGHT = 1;
         
         public const float START_SPEED = 280f;
         public const float MAX_SPEED = 900f;
@@ -67,17 +77,24 @@ namespace TrexRunner.Entities
         private Sprite _idleBlinkSprite;
         private Sprite _deadSprite;
         private Sprite _deadCrouchingSprite;
+        private Sprite _hurtBlankSprite;
 
         //sounds
         private SoundEffect _jumpSound;
+        private SoundEffect _hitSound;
 
         //trex animations
         private SpriteAnimation _blinkAnimation;
         private SpriteAnimation _runAnimation;
         private SpriteAnimation _duckAnimation;
+        private SpriteAnimation _hurtAnimation;
+
 
         public event EventHandler JumpComplete;
         public event EventHandler Died;
+
+        public bool IsHurt {get; set;}
+
 
         //stores current state of trex
         public TrexState State  { get; private set; }
@@ -88,11 +105,15 @@ namespace TrexRunner.Entities
         //stores current position of trex
         public Vector2 Position { get; set; }
 
+        public TrexRunnerGame Game;
+
         public int DrawOrder { get; set; }
 
         public bool IsAlive { get; private set; }
 
         public float Speed { get; private set; }
+
+        public int Health = 3;
 
         public Rectangle CollisionBox
         {
@@ -117,20 +138,25 @@ namespace TrexRunner.Entities
         }
 
 
-        public Trex(Texture2D spriteSheet, Vector2 position, SoundEffect jumpSound)
+        public Trex(Texture2D spriteSheet, Vector2 position, SoundEffect jumpSound, SoundEffect hitSound, TrexRunnerGame game)
         {
             
             Position = position;
+            Game = game;
             _idleBackgroundSprite = new Sprite(spriteSheet, TREX_IDLE_BACKGROUND_SPRITE_POS_X, TREX_IDLE_BACKGROUND_SPRITE_POS_Y, TREX_DEFAULT_SPRITE_WIDTH, TREX_DEFAULT_SPRITE_HEIGHT);
             State = TrexState.Idle;
 
             _jumpSound = jumpSound;
+            _hitSound = hitSound;
 
             _random = new Random();
 
-            //defines two sprites to be used in the idle animation
+
             _idleSprite = new Sprite(spriteSheet, TREX_DEFAULT_SPRITE_POS_X, TREX_DEFAULT_SPRITE_POS_Y, TREX_DEFAULT_SPRITE_WIDTH, TREX_DEFAULT_SPRITE_HEIGHT);
             _idleBlinkSprite = new Sprite(spriteSheet, TREX_DEFAULT_SPRITE_POS_X + TREX_DEFAULT_SPRITE_WIDTH, TREX_DEFAULT_SPRITE_POS_Y, TREX_DEFAULT_SPRITE_WIDTH, TREX_DEFAULT_SPRITE_HEIGHT);
+            _deadSprite = new Sprite(spriteSheet, TREX_DEAD_SPRITE_POS_X, TREX_DEAD_SPRITE_POS_Y, TREX_DEFAULT_SPRITE_WIDTH, TREX_DEFAULT_SPRITE_HEIGHT);
+            _deadCrouchingSprite = new Sprite(spriteSheet, TREX_DEAD_CROUCHING_SPRITE_POS_X, TREX_DEAD_CROUCHING_SPRITE_POS_Y, TREX_DUCKING_SPRITE_WIDTH, TREX_DEFAULT_SPRITE_HEIGHT);
+            _hurtBlankSprite = new Sprite(spriteSheet, HURT_BLANK_SPRITE_POS_X, HURT_BLANK_SPRITE_POS_Y, HURT_BLANK_SPRITE_WIDTH, HURT_BLANK_SPRITE_HEIGHT);
 
             _blinkAnimation = new SpriteAnimation();
 
@@ -151,8 +177,9 @@ namespace TrexRunner.Entities
             _duckAnimation.AddFrame(_duckAnimation[0].Sprite, RUN_ANIMATION_FRAME_LENGTH * 2);
             _duckAnimation.Play();
 
-            _deadSprite = new Sprite(spriteSheet, TREX_DEAD_SPRITE_POS_X, TREX_DEAD_SPRITE_POS_Y, TREX_DEFAULT_SPRITE_WIDTH, TREX_DEFAULT_SPRITE_HEIGHT);
-            _deadCrouchingSprite = new Sprite(spriteSheet, TREX_DEAD_CROUCHING_SPRITE_POS_X, TREX_DEAD_CROUCHING_SPRITE_POS_Y, TREX_DUCKING_SPRITE_WIDTH, TREX_DEFAULT_SPRITE_HEIGHT);
+            _hurtAnimation = SpriteAnimation.CreateSimpleAlternatingAnimation(spriteSheet, _deadSprite, _hurtBlankSprite, TREX_HURT_SPRITE_FLASH_LENGTH, 6);
+            _hurtAnimation.Play();
+
             IsAlive = true;
         }
 
@@ -170,29 +197,38 @@ namespace TrexRunner.Entities
         {   
             if (IsAlive)
             {
-                if (State == TrexState.Idle)
+                if (!IsHurt)
                 {
-                    _idleBackgroundSprite.Draw(spriteBatch, Position);
-                    _blinkAnimation.Draw(spriteBatch, Position);
+                    if (State == TrexState.Idle)
+                    {
+                        _idleBackgroundSprite.Draw(spriteBatch, Position);
+                        _blinkAnimation.Draw(spriteBatch, Position);
+                    }
+
+                    else if (State == TrexState.Jumping || State == TrexState.Falling)
+                    {
+
+                        _idleSprite.Draw(spriteBatch, Position);
+
+                    }
+                    else if (State == TrexState.Running)
+                    {
+
+                        _runAnimation.Draw(spriteBatch, Position);
+
+                    }
+                    else if (State == TrexState.Ducking)
+                    {
+
+                        _duckAnimation.Draw(spriteBatch, Position);
+
+                    }
                 }
-
-                else if (State == TrexState.Jumping || State == TrexState.Falling)
+                if (IsHurt)
                 {
 
-                    _idleSprite.Draw(spriteBatch, Position);
-
-                }
-                else if (State == TrexState.Running)
-                {
-
-                    _runAnimation.Draw(spriteBatch, Position);
-
-                }
-                else if (State == TrexState.Ducking)
-                {
-
-                    _duckAnimation.Draw(spriteBatch, Position);
-
+                    _hurtAnimation.Draw(spriteBatch, Position);           
+                
                 }
 
                 PreviousState = State;
@@ -216,7 +252,7 @@ namespace TrexRunner.Entities
         //it calls other update functions in other classes that function in their own way
         public void Update(GameTime gameTime)
         {
-            if(State == TrexState.Idle)
+            if(State == TrexState.Idle && !IsHurt)
             {
                 //if the blink animation is not playing while idle, it will remake a new one with a new random number and play it
                 if(!_blinkAnimation.IsPlaying)
@@ -255,11 +291,12 @@ namespace TrexRunner.Entities
                     OnJumpComplete();
 
                 }
+                    
 
             }
 
             //continues the timer for the run animation
-            else if (State == TrexState.Running)
+            else if (State == TrexState.Running && !IsHurt)
             {
 
                 _runAnimation.Update(gameTime);
@@ -267,10 +304,24 @@ namespace TrexRunner.Entities
             }
 
             //continues the timer for the duck animatiion
-            else if (State == TrexState.Ducking)
+            else if (State == TrexState.Ducking && !IsHurt)
             {
 
                 _duckAnimation.Update(gameTime);
+
+            }
+
+
+            if (IsHurt)
+            {
+                _hurtAnimationElapsedTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                _hurtAnimation.Update(gameTime);
+
+                if(_hurtAnimationElapsedTime >= _hurtAnimationLength)
+                {
+                    IsHurt = false;
+                    _hurtAnimationElapsedTime = 0;
+                }
 
             }
 
@@ -279,6 +330,12 @@ namespace TrexRunner.Entities
 
             if(Speed > MAX_SPEED)
                 Speed = MAX_SPEED;
+
+            if(Health <= 0)
+            {
+                Die();
+            }
+
 
             //resets the drop velocity every frame, only to be changed when calling Drop()
             _dropVelocity = 0;
@@ -397,6 +454,19 @@ namespace TrexRunner.Entities
             OnDied();
 
             return true;
+        }
+
+        public void LoseHealth()
+        {
+            Health -= 1;
+            IsHurt = true;
+            _hitSound.Play();
+            Game.shakeScreen = true;
+        }
+
+        public void GainHealth()
+        {
+            Health += 1;
         }
     }
 }

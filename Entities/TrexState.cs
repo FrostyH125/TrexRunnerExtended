@@ -6,6 +6,6 @@ namespace TrexRunner.Entities
         Running,
         Jumping,
         Ducking,
-        Falling
+        Falling,
     }
 }

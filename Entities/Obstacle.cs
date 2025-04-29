@@ -14,10 +14,13 @@ namespace TrexRunner.Entities
 
         public Vector2 Position { get; protected set; }
 
+        private bool IsObstacleActive { get; set; }
+
         protected Obstacle(Trex trex, Vector2 position)
         {
             _trex = trex;
             Position = position;
+            IsObstacleActive = true;
         }
 
 
@@ -38,9 +41,10 @@ namespace TrexRunner.Entities
             Rectangle obstacleCollisionBox = CollisionBox;
             Rectangle trexCollisionBox = _trex.CollisionBox;
 
-            if(obstacleCollisionBox.Intersects(trexCollisionBox))
+            if(obstacleCollisionBox.Intersects(trexCollisionBox) && IsObstacleActive)
             {
-                _trex.Die();
+                _trex.LoseHealth();
+                IsObstacleActive = false;
             }
         }
 

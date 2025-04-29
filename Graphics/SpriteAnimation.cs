@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -88,7 +89,6 @@ namespace TrexRunner.Graphics
                         else
                             Stop();
                     }
-                    //could you replace this to -= 0 instead?
                 
             }
 
@@ -157,6 +157,35 @@ namespace TrexRunner.Graphics
 
             return anim;
 
+        }
+
+        //creates a simple animation with 2 frames, alternating between them with a set duration for each frame
+        public static SpriteAnimation CreateSimpleAlternatingAnimation(Texture2D texture, Sprite firstSprite, Sprite secondSprite, float frameDuration, int frameCount)
+        {
+            if(texture == null)
+                throw new ArgumentNullException(nameof(texture));
+
+            SpriteAnimation anim = new SpriteAnimation();
+
+            for (int i = 0; i < frameCount; i++)
+            {
+                anim.AddFrame(firstSprite, frameDuration * i);
+
+                if(i == frameCount - 1)
+                    anim.AddFrame(firstSprite, frameDuration * (i + 1));
+
+                i++;
+
+                anim.AddFrame(secondSprite, frameDuration * i);
+
+                if(i == frameCount - 1)
+                    anim.AddFrame(secondSprite, frameDuration * (i + 1));
+
+                
+            }
+
+
+            return anim;
         }
 
     }

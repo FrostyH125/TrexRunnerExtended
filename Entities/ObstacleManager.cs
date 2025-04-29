@@ -91,6 +91,7 @@ namespace TrexRunner.Entities
 
             }
 
+
         }
 
         private void SpawnRandomObstacle()

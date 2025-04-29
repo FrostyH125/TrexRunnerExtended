@@ -7,7 +7,7 @@ namespace TrexRunner.Entities
     public class Cloud : SkyObject
     {
 
-        private const int TEXTURE_COORDS_X = 87;
+        private const int TEXTURE_COORDS_X = 87; 
         private const int TEXTURE_COORDS_Y = 0;
         private const int SPRITE_WIDTH = 46;
         private const int SPRITE_HEIGHT = 17;
